@@ -236,8 +236,12 @@ else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:8080",
         "http://127.0.0.1:9000",
+        "MohamedWahba.pythonanywhere.com"
+
     ]
 PASSWORD_RESET_TIMEOUT = 900
 FRONTEND_URL = env("FRONTEND_URL")
 # Site name for emails
 SITE_NAME = 'Bright Scope'
+
+ALLOWED_HOSTS = ["MohamedWahba.pythonanywhere.com"]
