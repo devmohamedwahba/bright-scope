@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "rest_framework",
     'apps.account',
     'apps.contact_us',
+    'apps.service',
 ]
 
 MIDDLEWARE = [
@@ -234,7 +235,7 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     CORS_ALLOWED_ORIGINS = [
-        "http://localhost:8080",
+        "http://localhost:8000",
         "http://127.0.0.1:9000",
         "MohamedWahba.pythonanywhere.com"
 
@@ -244,4 +245,5 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Site name for emails
 SITE_NAME = 'Bright Scope'
 
-ALLOWED_HOSTS = ["MohamedWahba.pythonanywhere.com"]
+ALLOWED_HOSTS = ["MohamedWahba.pythonanywhere.com", 'localhost',
+                 '127.0.0.1', ]

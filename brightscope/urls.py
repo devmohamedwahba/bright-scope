@@ -24,8 +24,10 @@ urlpatterns = [
 
     # # API routes with versioning
     # path('api/v1/features/', include('apps.feature.urls')),
-    path('api/v1/contact/', include('apps.contact_us.urls')),
     path('api/v1/auth/', include('apps.account.urls')),
+    path('api/v1/contact/', include('apps.contact_us.urls')),
+    path('api/v1/services/', include('apps.service.urls')),
+
 ]
 
 # Serve media files in development
