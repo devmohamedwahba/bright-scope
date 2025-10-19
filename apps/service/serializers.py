@@ -1,12 +1,16 @@
 from rest_framework import serializers
-from .models import Service, ServiceFeature, Package, Addon, AddonCategory, Booking
+from .models import Service, ServiceFeature, Package, Addon, AddonCategory, Booking, ServiceContent
 
 
 class ServiceFeatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceFeature
-        fields = ['id', 'name', 'description', 'icon', 'order']
+        fields = '__all__'
 
+class ServiceContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceContent
+        fields = '__all__'
 
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,30 +33,27 @@ class AddonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Addon
-        fields = [
-            'id', 'name', 'description', 'price',
-            'category', 'category_name', 'is_active', 'order'
-        ]
+        fields = "__all__"
 
 
 class ServiceListSerializer(serializers.ModelSerializer):
+    features = ServiceFeatureSerializer(many=True, read_only=True)
+    contents = ServiceContentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Service
-        fields = ['id', 'name', 'service_type', 'description', 'is_active']
+        fields = "__all__"
 
 
 class ServiceDetailSerializer(serializers.ModelSerializer):
     features = ServiceFeatureSerializer(many=True, read_only=True)
+    contents = ServiceContentSerializer(many=True, read_only=True)
     packages = PackageSerializer(many=True, read_only=True)
     addons = AddonSerializer(many=True, read_only=True)
 
     class Meta:
         model = Service
-        fields = [
-            'id', 'name', 'service_type', 'description',
-            'hero_title', 'hero_description', 'features',
-            'packages', 'addons', 'is_active'
-        ]
+        fields = "__all__"
 
 
 class BookingCreateSerializer(serializers.ModelSerializer):

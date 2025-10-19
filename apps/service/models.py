@@ -12,14 +12,36 @@ class Service(BaseModel):
     ]
 
     name = models.CharField(max_length=100)
+    start_price = models.IntegerField(null=True, blank=True)
     service_type = models.CharField(max_length=50, choices=SERVICE_TYPES)
     description = models.TextField()
+    icon = models.CharField(max_length=100, blank=True)
+    is_active = models.BooleanField(default=True)
     hero_title = models.CharField(max_length=200, blank=True)
     hero_description = models.TextField(blank=True)
-    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
+
+
+class ServiceFeature(BaseModel):
+    service = models.ForeignKey(Service, related_name='features', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    icon = models.CharField(max_length=100, blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.service.name} - {self.name}"
+
+
+class ServiceContent(BaseModel):
+    service = models.ForeignKey(Service, related_name='contents', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    order = models.PositiveIntegerField(default=0)
 
 
 class Package(BaseModel):
@@ -69,20 +91,6 @@ class Addon(BaseModel):
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     is_active = models.BooleanField(default=True)
-    order = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        ordering = ['order']
-
-    def __str__(self):
-        return f"{self.service.name} - {self.name}"
-
-
-class ServiceFeature(BaseModel):
-    service = models.ForeignKey(Service, related_name='features', on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    icon = models.CharField(max_length=100, blank=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
