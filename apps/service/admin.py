@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Service, ServiceFeature, Package, Addon, AddonCategory, Booking, ServiceContent
+from .models import Service, ServiceFeature, Package, Addon, AddonCategory, Booking, ServiceContent, ServiceRating
 
 
 class PackageInline(admin.TabularInline):
@@ -22,12 +22,17 @@ class ServiceContentInline(admin.TabularInline):
     extra = 1
 
 
+class ServiceRatingInline(admin.TabularInline):
+    model = ServiceRating
+    extra = 1
+
+
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ['name', 'service_type', 'is_active']
     list_filter = ['service_type', 'is_active']
     search_fields = ['name', 'description']
-    inlines = [ServiceFeatureInline, ServiceContentInline, PackageInline, AddonInline]
+    inlines = [ServiceFeatureInline, ServiceContentInline, PackageInline, AddonInline, ServiceRatingInline]
 
 
 @admin.register(Package)

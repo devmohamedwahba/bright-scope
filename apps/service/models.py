@@ -18,7 +18,9 @@ class Service(BaseModel):
     icon = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
     hero_title = models.CharField(max_length=200, blank=True)
+    sub_hero_title = models.CharField(max_length=200, blank=True, null=True)
     hero_description = models.TextField(blank=True)
+    hero_image = models.ImageField(upload_to='services/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -42,6 +44,26 @@ class ServiceContent(BaseModel):
     service = models.ForeignKey(Service, related_name='contents', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.service.name} - {self.name}"
+
+
+class ServiceRating(BaseModel):
+    service = models.ForeignKey(Service, related_name='ratings', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
+    icon = models.CharField(max_length=100, blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.service.name} - {self.name}"
 
 
 class Package(BaseModel):

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Service, ServiceFeature, Package, Addon, AddonCategory, Booking, ServiceContent
+from .models import Service, ServiceFeature, Package, Addon, AddonCategory, Booking, ServiceContent, ServiceRating
 
 
 class ServiceFeatureSerializer(serializers.ModelSerializer):
@@ -10,6 +10,11 @@ class ServiceFeatureSerializer(serializers.ModelSerializer):
 class ServiceContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceContent
+        fields = '__all__'
+
+class ServiceRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceRating
         fields = '__all__'
 
 class PackageSerializer(serializers.ModelSerializer):
@@ -48,6 +53,7 @@ class ServiceListSerializer(serializers.ModelSerializer):
 class ServiceDetailSerializer(serializers.ModelSerializer):
     features = ServiceFeatureSerializer(many=True, read_only=True)
     contents = ServiceContentSerializer(many=True, read_only=True)
+    ratings = ServiceRatingSerializer(many=True, read_only=True)
     packages = PackageSerializer(many=True, read_only=True)
     addons = AddonSerializer(many=True, read_only=True)
 
