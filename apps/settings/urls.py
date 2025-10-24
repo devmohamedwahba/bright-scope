@@ -1,9 +1,8 @@
-from rest_framework.routers import SimpleRouter
-from .views import (
-    ContactInfoViewSet
-)
+from django.urls import path
 
-router = SimpleRouter(trailing_slash=False)
-router.register(r'contact-info', ContactInfoViewSet, basename='settings')
+from .views import ContactInfoViewSet
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('contact-info/', ContactInfoViewSet.as_view(), name='contact-info'),
+
+]
