@@ -5,9 +5,6 @@ from .models import ContactInfo, NewsletterSubscriber
 class ContactInfoSerializer(serializers.ModelSerializer):
     working_hours = serializers.SerializerMethodField()
 
-    # services = serializers.SerializerMethodField()
-    # quick_links = serializers.SerializerMethodField()
-
     class Meta:
         model = ContactInfo
         fields = '__all__'
@@ -19,24 +16,6 @@ class ContactInfoSerializer(serializers.ModelSerializer):
             'saturday': obj.saturday_hours,
             'sunday': obj.sunday_hours
         }
-
-    # def get_services(self, obj):
-    #     return [
-    #         "Home Cleaning",
-    #         "Deep Cleaning",
-    #         "Pest Control",
-    #         "Post-Construction",
-    #         "Office & Commercial"
-    #     ]
-    #
-    # def get_quick_links(self, obj):
-    #     return [
-    #         {"title": "About Us", "url": "/about-us"},
-    #         {"title": "Careers", "url": "/careers"},
-    #         {"title": "Get Quote", "url": "/get-quote"},
-    #         {"title": "Privacy Policy", "url": "/privacy-policy"},
-    #         {"title": "Terms of Service", "url": "/terms-of-service"}
-    #     ]
 
 
 class NewsletterSubscriberSerializer(serializers.ModelSerializer):
