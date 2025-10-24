@@ -4,7 +4,7 @@ from .models import ContactInfo, NewsletterSubscriber
 
 @admin.register(ContactInfo)
 class ContactInfoAdmin(admin.ModelAdmin):
-    list_display = ['company_name', 'phone_number', 'city']
+    list_display = ['company_name', 'phone_number']
 
     def has_add_permission(self, request):
         # Allow only one contact info instance
@@ -15,5 +15,5 @@ class ContactInfoAdmin(admin.ModelAdmin):
 
 @admin.register(NewsletterSubscriber)
 class NewsletterSubscriberAdmin(admin.ModelAdmin):
-    list_display = ['email', 'subscribed_at']
+    list_display = ['email']
     search_fields = ['email']
