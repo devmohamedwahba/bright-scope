@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'apps.contact_us',
     'apps.service',
     'apps.settings',
+    'apps.payments',
 ]
 
 MIDDLEWARE = [
@@ -248,3 +249,9 @@ SITE_NAME = 'Bright Scope'
 
 ALLOWED_HOSTS = ["MohamedWahba.pythonanywhere.com", 'localhost',
                  '127.0.0.1', ]
+
+PAYTABS_PROFILE_ID = os.getenv("PAYTABS_PROFILE_ID")
+PAYTABS_SERVER_KEY = os.getenv("PAYTABS_SERVER_KEY")
+PAYTABS_BASE_URL = os.getenv("PAYTABS_BASE_URL", "https://secure.paytabs.com")
+PAYTABS_CALLBACK_PATH = os.getenv("PAYTABS_CALLBACK_PATH")
+PAYTABS_RETURN_PATH = os.getenv("PAYTABS_RETURN_PATH")
