@@ -239,7 +239,7 @@ else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:8000",
         "http://127.0.0.1:9000",
-        "https://bright-scope-2c6c515b6aa6.herokuapp.com"
+        'bright-scope-2c6c515b6aa6.herokuapp.com'
 
     ]
 PASSWORD_RESET_TIMEOUT = 900
@@ -247,7 +247,7 @@ FRONTEND_URL = env("FRONTEND_URL")
 # Site name for emails
 SITE_NAME = 'Bright Scope'
 
-ALLOWED_HOSTS = ["MohamedWahba.pythonanywhere.com", 'localhost',
+ALLOWED_HOSTS = ['bright-scope-2c6c515b6aa6.herokuapp.com', 'localhost',
                  '127.0.0.1', ]
 
 PAYTABS_PROFILE_ID = os.getenv("PAYTABS_PROFILE_ID")
