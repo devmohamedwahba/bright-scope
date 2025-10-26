@@ -239,7 +239,7 @@ else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:8000",
         "http://127.0.0.1:9000",
-        "MohamedWahba.pythonanywhere.com"
+        "https://bright-scope-2c6c515b6aa6.herokuapp.com"
 
     ]
 PASSWORD_RESET_TIMEOUT = 900
