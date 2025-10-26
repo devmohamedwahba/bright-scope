@@ -43,6 +43,7 @@ DEBUG = env("DEBUG", default="False").lower() == "true"
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",  # 👈 Must come before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -253,3 +254,21 @@ PAYTABS_SERVER_KEY = os.getenv("PAYTABS_SERVER_KEY")
 PAYTABS_BASE_URL = os.getenv("PAYTABS_BASE_URL", "https://secure.paytabs.com")
 PAYTABS_CALLBACK_PATH = os.getenv("PAYTABS_CALLBACK_PATH")
 PAYTABS_RETURN_PATH = os.getenv("PAYTABS_RETURN_PATH")
+
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Bright Scope Admin",
+    "site_header": "Bright Scope",
+    "site_brand": "Bright Scope",
+    "welcome_sign": "Welcome to Bright Scope Admin",
+    "site_logo": None,  # leave None to remove the “A” icon entirely
+}
+
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",  # other options: darkly, solar, pulse, etc.
+    "navbar": "navbar-dark navbar-primary",
+    "sidebar": "sidebar-dark-primary",
+}
+
