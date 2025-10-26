@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import environ, os, sys
+import dj_database_url
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 
@@ -101,14 +102,11 @@ if ENVIRONMENT.lower() == "local":
     }
 else:
     DATABASES = {
-        "default": {
-            "ENGINE": "django_prometheus.db.backends.postgresql",
-            "HOST": env("DATABASE_HOST"),
-            "PORT": env("DATABASE_PORT"),
-            "NAME": env("DATABASE_NAME"),
-            "USER": env("DATABASE_USER"),
-            "PASSWORD": env("DATABASE_PASSWORD"),
-        }
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
+            conn_max_age=600,
+            ssl_require=True
+        )
     }
 
 # Password validation
