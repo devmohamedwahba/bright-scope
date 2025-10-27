@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class CreatePaymentView(APIView):
 
     def post(self, request):
@@ -67,11 +68,23 @@ class PayTabsCallbackView(APIView):
         return Response({"message": "Callback processed successfully."}, status=status.HTTP_200_OK)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class PayTabsReturnView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
-        tran_ref = request.GET.get("tranRef")
+        """Handle browser GET redirect."""
+        data = request.query_params
+        return self.handle_payment_result(data)
+
+    def post(self, request):
+        """Handle POST redirect (PayTabs sends JSON or form data)."""
+        data = request.data
+        return self.handle_payment_result(data)
+
+    def handle_payment_result(self, data):
+        """Common handler for both GET and POST."""
+        tran_ref = data.get("tranRef") or data.get("tran_ref")
         if not tran_ref:
             return Response({"error": "Missing tran_ref"}, status=400)
 
