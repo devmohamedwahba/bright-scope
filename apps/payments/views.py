@@ -1,19 +1,16 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from .models import Payment
 from .serializers import PaymentCreateSerializer
 from .services.paytabs_service import PayTabsService
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 import logging
-import requests
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
 class CreatePaymentView(APIView):
-    # permission_classes = [permissions.IsAuthenticated]  # Optional: JWT protection
 
     def post(self, request):
         serializer = PaymentCreateSerializer(data=request.data)
@@ -21,7 +18,6 @@ class CreatePaymentView(APIView):
         payment = serializer.save()
 
         paytabs = PayTabsService()
-        # base_url = f"{request.scheme}://{request.get_host()}"
 
         try:
             result = paytabs.create_payment_session(payment)
@@ -54,18 +50,8 @@ class PayTabsCallbackView(APIView):
         if not tran_ref:
             return Response({"error": "Missing transaction reference."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Verify the transaction with PayTabs
-        headers = {
-            "Authorization": f"Bearer {settings.PAYTABS_SERVER_KEY}",
-            "Content-Type": "application/json",
-        }
-        verify_resp = requests.post(
-            f"{settings.PAYTABS_BASE_URL}/payment/query",
-            json={"tran_ref": tran_ref},
-            headers=headers
-        ).json()
-
-        result = verify_resp.get("payment_result", {}).get("response_status")
+        paytabs = PayTabsService()
+        result = paytabs.verify_payment(tran_ref)
 
         try:
             payment = Payment.objects.get(transaction_reference=tran_ref)
@@ -73,8 +59,30 @@ class PayTabsCallbackView(APIView):
             logger.warning(f"Payment with tran_ref {tran_ref} not found.")
             return Response({"error": "Payment not found."}, status=status.HTTP_200_OK)
 
-        payment.status = "SUCCESS" if result == "A" else "FAILED"
+        status_code = result.get("payment_result", {}).get("response_status")
+        payment.status = "SUCCESS" if status_code == "A" else "FAILED"
         payment.save()
 
         logger.info(f"Payment {payment.order_id} updated to {payment.status}")
         return Response({"message": "Callback processed successfully."}, status=status.HTTP_200_OK)
+
+
+class PayTabsReturnView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        tran_ref = request.GET.get("tranRef")
+        if not tran_ref:
+            return Response({"error": "Missing tran_ref"}, status=400)
+
+        paytabs = PayTabsService()
+        result = paytabs.verify_payment(tran_ref)
+        logger.info(f"PayTabs return verification for {tran_ref}: {result}")
+
+        status_code = result.get("payment_result", {}).get("response_status")
+
+        return Response({
+            "tran_ref": tran_ref,
+            "status": status_code,
+            "details": result
+        })
