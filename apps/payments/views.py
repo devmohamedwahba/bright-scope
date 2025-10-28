@@ -7,6 +7,7 @@ from .models import Payment
 from .serializers import PaymentCreateSerializer
 from .services.paytabs_service import PayTabsService
 import logging
+from django.http import HttpResponseRedirect
 
 logger = logging.getLogger(__name__)
 
@@ -92,10 +93,12 @@ class PayTabsReturnView(APIView):
         result = paytabs.verify_payment(tran_ref)
         logger.info(f"PayTabs return verification for {tran_ref}: {result}")
 
-        status_code = result.get("payment_result", {}).get("response_status")
+        payment_status = result.get("payment_result", {}).get("response_status", "")
+        frontend_base_url = "https://bright-scope.vercel.app"
 
-        return Response({
-            "tran_ref": tran_ref,
-            "status": status_code,
-            "details": result
-        })
+        if payment_status in ["A", "success", "APPROVED"]:
+            redirect_url = f"{frontend_base_url}/payment-success?tranRef={tran_ref}"
+        else:
+            redirect_url = f"{frontend_base_url}/payment-failed?tranRef={tran_ref}"
+
+        return HttpResponseRedirect(redirect_url)
