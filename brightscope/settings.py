@@ -141,7 +141,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATIFILES_STORAGE = "whitnoise.storage.CompressedStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -253,4 +253,17 @@ PAYTABS_SERVER_KEY = os.getenv("PAYTABS_SERVER_KEY")
 PAYTABS_BASE_URL = os.getenv("PAYTABS_BASE_URL", "https://secure.paytabs.com")
 PAYTABS_CALLBACK_PATH = os.getenv("PAYTABS_CALLBACK_PATH")
 PAYTABS_RETURN_PATH = os.getenv("PAYTABS_RETURN_PATH")
+
+
+# Trust Heroku/Proxy HTTPS header
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Ensure cookies work under HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Prevent accidental domain mismatch on cookies
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
+
 
