@@ -283,5 +283,10 @@ MATERIAL_ADMIN_SITE = {
     # 'LOGIN_LOGO':  'path/to/login_logo.png',
 }
 
-SESSION_COOKIE_SECURE = False  # set True only if using HTTPS
-CSRF_COOKIE_SECURE = False     # set True only if using HTTPS
+# Ensure HTTPS handling
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
+# Cookies
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
