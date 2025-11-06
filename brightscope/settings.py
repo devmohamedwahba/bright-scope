@@ -282,3 +282,6 @@ MATERIAL_ADMIN_SITE = {
     # 'PROFILE_BG':  'path/to/background.png',
     # 'LOGIN_LOGO':  'path/to/login_logo.png',
 }
+
+SESSION_COOKIE_SECURE = False  # set True only if using HTTPS
+CSRF_COOKIE_SECURE = False     # set True only if using HTTPS
