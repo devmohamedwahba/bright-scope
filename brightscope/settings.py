@@ -43,7 +43,8 @@ DEBUG = env("DEBUG", default="False").lower() == "true"
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'material',
+    'material.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -141,7 +142,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATIFILES_STORAGE = "whitnoise.storage.CompressedStaticFilesStorage"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -255,15 +256,29 @@ PAYTABS_CALLBACK_PATH = os.getenv("PAYTABS_CALLBACK_PATH")
 PAYTABS_RETURN_PATH = os.getenv("PAYTABS_RETURN_PATH")
 
 
-# Trust Heroku/Proxy HTTPS header
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Ensure cookies work under HTTPS
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
-# Prevent accidental domain mismatch on cookies
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SAMESITE = 'Lax'
-
-
+# JAZZMIN_SETTINGS = {
+#     "site_title": "Bright Scope Admin",
+#     "site_header": "Bright Scope",
+#     "site_brand": "Bright Scope",
+#     "welcome_sign": "Welcome to Bright Scope Admin",
+#     "site_logo": None,  # leave None to remove the “A” icon entirely
+# }
+#
+#
+# JAZZMIN_UI_TWEAKS = {
+#     "theme": "flatly",  # other options: darkly, solar, pulse, etc.
+#     "navbar": "navbar-dark navbar-primary",
+#     "sidebar": "sidebar-dark-primary",
+# }
+#
+MATERIAL_ADMIN_SITE = {
+    'HEADER': 'Bright Scope Admin',
+    'TITLE':  'Bright Scope',
+    # 'FAVICON':  'path/to/favicon.png',
+    'MAIN_BG_COLOR':  '#3f51b5',   # Material Indigo
+    'MAIN_HOVER_COLOR':  '#303f9f',
+    # 'PROFILE_PICTURE':  'path/to/logo.png',
+    # 'PROFILE_BG':  'path/to/background.png',
+    # 'LOGIN_LOGO':  'path/to/login_logo.png',
+}
