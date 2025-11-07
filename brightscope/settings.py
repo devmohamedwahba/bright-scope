@@ -36,9 +36,6 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    # 'material',
-    # 'material.admin',
-    # 'django.contrib.admin',
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -201,17 +198,6 @@ PAYTABS_SERVER_KEY = os.getenv("PAYTABS_SERVER_KEY")
 PAYTABS_BASE_URL = os.getenv("PAYTABS_BASE_URL", "https://secure.paytabs.com")
 PAYTABS_CALLBACK_PATH = os.getenv("PAYTABS_CALLBACK_PATH")
 PAYTABS_RETURN_PATH = os.getenv("PAYTABS_RETURN_PATH")
-
-# MATERIAL_ADMIN_SITE = {
-#     'HEADER': 'Bright Scope Admin',
-#     'TITLE': 'Bright Scope',
-#     'MAIN_BG_COLOR': '#3f51b5',
-#     'MAIN_HOVER_COLOR': '#303f9f',
-#     'SHOW_THEMES': True,
-#     'TRAY_REVERSE': True,
-#     'NAVBAR_REVERSE': True,
-#     'SHOW_COUNTS': True,
-# }
 
 # Jazzmin settings (modern admin interface)
 JAZZMIN_SETTINGS = {
