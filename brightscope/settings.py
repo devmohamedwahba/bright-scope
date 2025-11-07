@@ -220,3 +220,13 @@ CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 CORS_ALLOWED_ORIGINS = [
     "https://bright-scope-2c6c515b6aa6.herokuapp.com",
 ]
+
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "https://bright-scope-2c6c515b6aa6.herokuapp.com",
+        "http://localhost:3000",
+        "http://127.0.0.1:8000",
+
+    ]
