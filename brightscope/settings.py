@@ -206,17 +206,16 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@brightscope.com')
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=40),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": False,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
 
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
 
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
@@ -224,14 +223,12 @@ SIMPLE_JWT = {
 
     "JTI_CLAIM": "jti",
 
+    # Use different serializers for admin vs API if needed
     "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
     "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
     "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
-    "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
-    "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
-
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
@@ -274,11 +271,61 @@ PAYTABS_RETURN_PATH = os.getenv("PAYTABS_RETURN_PATH")
 #
 MATERIAL_ADMIN_SITE = {
     'HEADER': 'Bright Scope Admin',
-    'TITLE':  'Bright Scope',
-    # 'FAVICON':  'path/to/favicon.png',
-    'MAIN_BG_COLOR':  '#3f51b5',   # Material Indigo
-    'MAIN_HOVER_COLOR':  '#303f9f',
-    # 'PROFILE_PICTURE':  'path/to/logo.png',
-    # 'PROFILE_BG':  'path/to/background.png',
-    # 'LOGIN_LOGO':  'path/to/login_logo.png',
+    'TITLE': 'Bright Scope',
+    'MAIN_BG_COLOR': '#3f51b5',
+    'MAIN_HOVER_COLOR': '#303f9f',
+    'SHOW_THEMES': True,  # Show default themes
+    'TRAY_REVERSE': True,
+    'NAVBAR_REVERSE': True,
+    'SHOW_COUNTS': True,
 }
+
+# Ensure admin static files are properly configured
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+
+######################################################################
+# Session & Authentication
+######################################################################
+
+# Session settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
+SESSION_COOKIE_SECURE = not DEBUG  # Secure cookies in production
+SESSION_COOKIE_HTTPONLY = True
+SESSION_SAVE_EVERY_REQUEST = True  # Extends session on every request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session after browser close
+
+# CSRF settings
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = not DEBUG
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# Login URL
+LOGIN_URL = reverse_lazy('admin:login')
+LOGIN_REDIRECT_URL = reverse_lazy('admin:index')
+LOGOUT_REDIRECT_URL = reverse_lazy('admin:login')
+
+
+# Browser session settings
+SESSION_COOKIE_NAME = 'brightscope_sessionid'
+CSRF_COOKIE_NAME = 'brightscope_csrftoken'
+
+# For cross-domain issues in development
+if DEBUG:
+    SESSION_COOKIE_DOMAIN = None
+    CSRF_COOKIE_DOMAIN = None
+else:
+    SESSION_COOKIE_DOMAIN = '.herokuapp.com'  # Replace with your domain
+    CSRF_COOKIE_DOMAIN = '.herokuapp.com'
+
+
+SESSION_COOKIE_AGE = 31536000  # 1 year in seconds
