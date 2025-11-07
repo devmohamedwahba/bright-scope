@@ -133,7 +133,7 @@ STATICFILES_FINDERS = [
 ]
 
 ######################################################################
-# Session & Authentication - UPDATED FOR HEROKU
+# Session & Authentication - FIXED VERSION
 ######################################################################
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
@@ -142,35 +142,27 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_NAME = 'brightscope_sessionid'
-SESSION_COOKIE_SAMESITE = 'None'  # Changed from Lax
+SESSION_COOKIE_SAMESITE = 'Lax'
 
-# CSRF Settings - UPDATED FOR HEROKU
+# CSRF Settings - FIXED VERSION
 CSRF_TRUSTED_ORIGINS = [
     "https://bright-scope-2c6c515b6aa6.herokuapp.com",
     "https://www.bright-scope-2c6c515b6aa6.herokuapp.com",
-    "http://bright-scope-2c6c515b6aa6.herokuapp.com",  # Added HTTP
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
 ]
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SECURE = True  # Force True for Heroku
-CSRF_COOKIE_SAMESITE = 'None'  # Changed from Lax
+CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_NAME = 'brightscope_csrftoken'
 CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
-# Heroku specific settings - ADD THIS SECTION
+# Heroku specific settings
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = not DEBUG
+SECURE_SSL_REDIRECT = False  # Let Heroku handle redirects
 
-if not DEBUG:
-    SESSION_COOKIE_DOMAIN = '.herokuapp.com'
-    CSRF_COOKIE_DOMAIN = '.herokuapp.com'
-else:
-    SESSION_COOKIE_DOMAIN = None
-    CSRF_COOKIE_DOMAIN = None
+# Remove domain settings
+SESSION_COOKIE_DOMAIN = None
+CSRF_COOKIE_DOMAIN = None
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -187,32 +179,29 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 CORS_ALLOWED_ORIGINS = [
     "https://bright-scope-2c6c515b6aa6.herokuapp.com",
-    "https://www.bright-scope-2c6c515b6aa6.herokuapp.com",
-    "http://bright-scope-2c6c515b6aa6.herokuapp.com",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
 ]
 
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
+    CORS_ALLOWED_ORIGINS.extend([
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+    ])
     # Allow HTTP in development only
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SAMESITE = 'Lax'
-    SESSION_COOKIE_SAMESITE = 'Lax'
 
 ######################################################################
 # Other Settings
 ######################################################################
 ALLOWED_HOSTS = [
     'bright-scope-2c6c515b6aa6.herokuapp.com',
-    'www.bright-scope-2c6c515b6aa6.herokuapp.com',
+    '.bright-scope-2c6c515b6aa6.herokuapp.com',
     'localhost',
     '127.0.0.1',
     '0.0.0.0',
-    '.herokuapp.com',
 ]
 
 AUTH_USER_MODEL = 'account.User'
@@ -276,8 +265,8 @@ MATERIAL_ADMIN_SITE = {
     'SHOW_COUNTS': True,
 }
 
-# Logging
-ENABLE_LOGGING = env('ENABLE_LOGGING', default="false").lower() == 'true'
+# Logging - Enable for debugging
+ENABLE_LOGGING = True  # Force enable for debugging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -300,12 +289,12 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': env("LOG_LEVEL", default="DEBUG").upper(),
+            'level': 'DEBUG',
             'propagate': True,
         },
     },
-} if ENABLE_LOGGING else None
+}
 
-# Heroku configuration - ADD THIS AT THE END
+# Heroku configuration
 import django_heroku
 django_heroku.settings(locals(), staticfiles=False)
