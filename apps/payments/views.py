@@ -8,7 +8,7 @@ from .serializers import PaymentCreateSerializer
 from .services.paytabs_service import PayTabsService
 import logging
 from django.http import HttpResponseRedirect
-
+from apps.service.models import Booking
 logger = logging.getLogger(__name__)
 
 
@@ -64,6 +64,14 @@ class PayTabsCallbackView(APIView):
         status_code = result.get("payment_result", {}).get("response_status")
         payment.status = "SUCCESS" if status_code == "A" else "FAILED"
         payment.save()
+
+        try:
+            booking = Booking.objects.get(customer_email=payment.customer_email)
+            booking.status = "SUCCESS" if status_code == "A" else "FAILED"
+            booking.save()
+        except Exception as ex:
+            logger.warning(f"Booking Does not exist {ex}")
+            pass
 
         logger.info(f"Payment {payment.order_id} updated to {payment.status}")
         return Response({"message": "Callback processed successfully."}, status=status.HTTP_200_OK)

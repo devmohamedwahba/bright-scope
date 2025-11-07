@@ -8,6 +8,7 @@ from .serializers import (
     ServiceListSerializer, ServiceDetailSerializer,
     BookingSerializer, BookingCreateSerializer
 )
+from django.db.models import Q
 
 
 class ServiceListAPIView(APIView):
@@ -36,7 +37,19 @@ class ServiceDetailAPIView(APIView):
 class BookingCreateAPIView(APIView):
     @classmethod
     def get(cls, request):
+        # Get email filter from query parameters
+        email = request.GET.get('email', None)
+
+        # Start with all bookings
         bookings = Booking.objects.all().order_by('-created_at')
+
+        # Apply email filter if provided
+        if email:
+            bookings = bookings.filter(
+                Q(customer_email__iexact=email) |
+                Q(customer_email__icontains=email)
+            )
+
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
 
