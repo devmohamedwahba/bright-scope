@@ -26,6 +26,21 @@ ENVIRONMENT = env("ENVIRONMENT", default="local")
 SECRET_KEY = env("SECRET_KEY", default=get_random_secret_key())
 DEBUG = env("DEBUG", default="False").lower() == "true"
 
+# Security settings for Heroku - ADD THIS SECTION
+if not DEBUG:
+    # Force HTTPS
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # CRITICAL for Heroku
+
+    # HSTS settings
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+    # Additional security
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+
 # Application definition
 INSTALLED_APPS = [
     'material',
@@ -123,7 +138,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"  # FIXED
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -146,13 +161,14 @@ SESSION_COOKIE_NAME = 'brightscope_sessionid'
 # CSRF Settings - FIXED
 CSRF_TRUSTED_ORIGINS = [
     "https://bright-scope-2c6c515b6aa6.herokuapp.com",
+    "https://www.bright-scope-2c6c515b6aa6.herokuapp.com",  # ADDED
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
-CSRF_USE_SESSIONS = False  # FIXED - Store in cookie
-CSRF_COOKIE_HTTPONLY = False  # FIXED - Allow JS access
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_NAME = 'brightscope_csrftoken'
@@ -173,6 +189,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 CORS_ALLOWED_ORIGINS = [
     "https://bright-scope-2c6c515b6aa6.herokuapp.com",
+    "https://www.bright-scope-2c6c515b6aa6.herokuapp.com",  # ADDED
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",
@@ -189,6 +206,7 @@ if DEBUG:
 ######################################################################
 ALLOWED_HOSTS = [
     'bright-scope-2c6c515b6aa6.herokuapp.com',
+    'www.bright-scope-2c6c515b6aa6.herokuapp.com',  # ADDED
     'localhost',
     '127.0.0.1',
     '0.0.0.0',
@@ -285,3 +303,9 @@ LOGGING = {
         },
     },
 } if ENABLE_LOGGING else None
+
+# Configure Django App for Heroku - ADD AT THE END
+if not DEBUG:
+    import django_heroku
+    # Apply Heroku settings (excluding static files as we handle them manually)
+    django_heroku.settings(locals(), staticfiles=False)
