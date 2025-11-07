@@ -204,7 +204,7 @@ JAZZMIN_SETTINGS = {
     "site_header": "Bright Scope",
     "site_brand": "Bright Scope",
     "welcome_sign": "Welcome to Bright Scope Admin",
-    "login_logo": "logo.svg",  # Logo on login page
+    "login_logo": "img/logo.svg",  # Logo on login page
     "login_logo_dark": "logo.svg",  # Logo for dark mode (optional)
     "copyright": "Bright Scope Ltd",
 }
