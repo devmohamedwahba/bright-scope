@@ -6,7 +6,8 @@ class ContactSubmission(BaseModel):
     SERVICE_TYPES = [
         ('consulting', 'Consulting'),
         ('support', 'Support'),
-        ('deep_clean', 'Deep Cleaning')
+        ('others', 'Other'),
+
     ]
 
     full_name = models.CharField(max_length=200)
