@@ -215,3 +215,8 @@ JAZZMIN_UI_TWEAKS = {
 }
 
 AUTH_USER_MODEL = 'account.User'
+CORS_ALLOW_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_ALLOWED_ORIGINS = [
+    "https://bright-scope-2c6c515b6aa6.herokuapp.com",
+]
