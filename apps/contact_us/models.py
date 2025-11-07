@@ -4,11 +4,9 @@ from common.utils import BaseModel
 
 class ContactSubmission(BaseModel):
     SERVICE_TYPES = [
-        ('residential', 'Residential Cleaning'),
-        ('commercial', 'Commercial Cleaning'),
-        ('deep_clean', 'Deep Cleaning'),
-        ('move_in_out', 'Move In/Out Cleaning'),
-        ('other', 'Other'),
+        ('consulting', 'Consulting'),
+        ('support', 'Support'),
+        ('deep_clean', 'Deep Cleaning')
     ]
 
     full_name = models.CharField(max_length=200)
