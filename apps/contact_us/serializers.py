@@ -74,31 +74,31 @@ class ContactSubmissionSerializer(serializers.ModelSerializer):
 
         return value
 
-    def validate_phone_number(self, value):
-        """
-        Enhanced phone number validation for UAE numbers
-        """
-        # Clean the phone number
-        value = value.strip().replace(' ', '').replace('-', '')
-
-        # Check if it starts with UAE country code
-        if not value.startswith('+971'):
-            # If it doesn't start with +971, try to add it
-            if value.startswith('971'):
-                value = '+' + value
-            elif value.startswith('0'):
-                value = '+971' + value[1:]
-            else:
-                value = '+971' + value
-
-        # Validate UAE phone number format
-        uae_phone_pattern = r'^\+971(?:[2-9]\d{7}|5[024568]\d{7})$'
-        if not re.match(uae_phone_pattern, value):
-            raise serializers.ValidationError(
-                "Please enter a valid UAE phone number (e.g., +971501234567)"
-            )
-
-        return value
+    # def validate_phone_number(self, value):
+    #     """
+    #     Enhanced phone number validation for UAE numbers
+    #     """
+    #     # Clean the phone number
+    #     value = value.strip().replace(' ', '').replace('-', '')
+    #
+    #     # Check if it starts with UAE country code
+    #     if not value.startswith('+971'):
+    #         # If it doesn't start with +971, try to add it
+    #         if value.startswith('971'):
+    #             value = '+' + value
+    #         elif value.startswith('0'):
+    #             value = '+971' + value[1:]
+    #         else:
+    #             value = '+971' + value
+    #
+    #     # Validate UAE phone number format
+    #     uae_phone_pattern = r'^\+971(?:[2-9]\d{7}|5[024568]\d{7})$'
+    #     if not re.match(uae_phone_pattern, value):
+    #         raise serializers.ValidationError(
+    #             "Please enter a valid UAE phone number (e.g., +971501234567)"
+    #         )
+    #
+    #     return value
 
     def validate_email(self, value):
         """

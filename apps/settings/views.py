@@ -7,12 +7,14 @@ from .serializers import ContactInfoSerializer, NewsletterSubscriberSerializer
 
 class ContactInfoViewSet(viewsets.ViewSet):
     """
-    ViewSet for contact information
+    ViewSet for contact information with multilingual support
     """
-    @classmethod
-    def list(cls, request):
+
+    def list(self, request):
         """
         Get contact information
+        Supports language parameter: ?lang=en or ?lang=ar
+        Also supports Accept-Language header
         """
         try:
             # Try to get existing contact info
@@ -22,7 +24,7 @@ class ContactInfoViewSet(viewsets.ViewSet):
             if not contact_info:
                 contact_info = ContactInfo.objects.create()
 
-            serializer = ContactInfoSerializer(contact_info)
+            serializer = ContactInfoSerializer(contact_info, context={'request': request})
             return Response(serializer.data)
 
         except Exception as e:
