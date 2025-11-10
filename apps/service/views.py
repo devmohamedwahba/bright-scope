@@ -1,7 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 from .models import Service, Booking
 from .serializers import (
@@ -37,13 +36,17 @@ class ServiceDetailAPIView(APIView):
 class BookingCreateAPIView(APIView):
     @classmethod
     def get(cls, request):
+        # Manual authentication check
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication credentials were not provided."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
         # Get email filter from query parameters
         email = request.GET.get('email', None)
-
-        # Start with all bookings
         bookings = Booking.objects.all().order_by('-created_at')
 
-        # Apply email filter if provided
         if email:
             bookings = bookings.filter(
                 Q(customer_email__iexact=email) |

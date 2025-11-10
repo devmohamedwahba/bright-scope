@@ -44,10 +44,16 @@ class AddonSerializer(serializers.ModelSerializer):
 class ServiceListSerializer(serializers.ModelSerializer):
     features = ServiceFeatureSerializer(many=True, read_only=True)
     contents = ServiceContentSerializer(many=True, read_only=True)
+    hero_image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
         fields = "__all__"
+
+    def get_hero_image_url(self, obj):
+        if obj.hero_image:
+            return obj.hero_image.url
+        return None
 
 
 class ServiceDetailSerializer(serializers.ModelSerializer):
@@ -56,10 +62,17 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
     ratings = ServiceRatingSerializer(many=True, read_only=True)
     packages = PackageSerializer(many=True, read_only=True)
     addons = AddonSerializer(many=True, read_only=True)
+    hero_image_url = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Service
         fields = "__all__"
+
+    def get_hero_image_url(self, obj):
+        if obj.hero_image:
+            return obj.hero_image.url
+        return None
 
 
 class BookingCreateSerializer(serializers.ModelSerializer):
