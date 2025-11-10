@@ -1,64 +1,240 @@
 from rest_framework import serializers
 from .models import Service, ServiceFeature, Package, Addon, AddonCategory, Booking, ServiceContent, ServiceRating
 
-
 class ServiceFeatureSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+
     class Meta:
         model = ServiceFeature
-        fields = '__all__'
+        fields = ['id', 'name', 'description', 'icon', 'order']
+
+    def get_name(self, obj):
+        language = self._get_language()
+        return obj.name_ar if language == 'ar' and obj.name_ar else obj.name
+
+    def get_description(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def _get_language(self):
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+        return 'en'
+
 
 class ServiceContentSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = ServiceContent
-        fields = '__all__'
+        fields = ['id', 'name', 'order']
+
+    def get_name(self, obj):
+        language = self._get_language()
+        return obj.name_ar if language == 'ar' and obj.name_ar else obj.name
+
+    def _get_language(self):
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+        return 'en'
+
 
 class ServiceRatingSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+
     class Meta:
         model = ServiceRating
-        fields = '__all__'
+        fields = ['id', 'name', 'description', 'icon', 'order']
+
+    def get_name(self, obj):
+        language = self._get_language()
+        return obj.name_ar if language == 'ar' and obj.name_ar else obj.name
+
+    def get_description(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def _get_language(self):
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+        return 'en'
+
 
 class PackageSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    square_feet = serializers.SerializerMethodField()
+    duration = serializers.SerializerMethodField()
+
     class Meta:
         model = Package
         fields = [
-            'id', 'name', 'package_type', 'price', 'square_feet',
-            'duration', 'description',
+            'id', 'name', 'package_type', 'price',
+            'square_feet', 'duration', 'description',
             'is_active', 'order'
         ]
 
+    def get_name(self, obj):
+        language = self._get_language()
+        return obj.name_ar if language == 'ar' and obj.name_ar else obj.name
+
+    def get_description(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def get_square_feet(self, obj):
+        language = self._get_language()
+        return obj.square_feet_ar if language == 'ar' and obj.square_feet_ar else obj.square_feet
+
+    def get_duration(self, obj):
+        language = self._get_language()
+        return obj.duration_ar if language == 'ar' and obj.duration_ar else obj.duration
+
+    def _get_language(self):
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+        return 'en'
+
 
 class AddonCategorySerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+
     class Meta:
         model = AddonCategory
-        fields = ['id', 'name', 'description', 'order']
+        fields = ['id', 'name', 'description', 'is_active', 'order']
+
+    def get_name(self, obj):
+        language = self._get_language()
+        return obj.name_ar if language == 'ar' and obj.name_ar else obj.name
+
+    def get_description(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def _get_language(self):
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+        return 'en'
 
 
 class AddonSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True)
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
 
     class Meta:
         model = Addon
-        fields = "__all__"
+        fields = [
+            'id', 'name', 'description', 'category',
+            'category_name', 'price', 'is_active', 'order'
+        ]
+
+    def get_name(self, obj):
+        language = self._get_language()
+        return obj.name_ar if language == 'ar' and obj.name_ar else obj.name
+
+    def get_description(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def _get_language(self):
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+        return 'en'
 
 
 class ServiceListSerializer(serializers.ModelSerializer):
     features = ServiceFeatureSerializer(many=True, read_only=True)
     contents = ServiceContentSerializer(many=True, read_only=True)
-    hero_image_url = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    hero_title = serializers.SerializerMethodField()
+    sub_hero_title = serializers.SerializerMethodField()
+    hero_description = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
         fields = [
             'id', 'name', 'start_price', 'service_type', 'description', 'icon',
             'is_active', 'hero_title', 'sub_hero_title', 'hero_description',
-            'hero_image_url', 'features', 'contents'
+            'image_url', 'features', 'contents'
         ]
 
-    def get_hero_image_url(self, obj):
-        if obj.hero_image:
-            url = obj.hero_image.url
-            return url.replace('/upload/', '/upload/f_auto,q_auto/')
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
         return None
+
+    def get_name(self, obj):
+        language = self._get_language()
+        return obj.name_ar if language == 'ar' and obj.name_ar else obj.name
+
+    def get_description(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def get_hero_title(self, obj):
+        language = self._get_language()
+        return obj.hero_title_ar if language == 'ar' and obj.hero_title_ar else obj.hero_title
+
+    def get_sub_hero_title(self, obj):
+        language = self._get_language()
+        return obj.sub_hero_title_ar if language == 'ar' and obj.sub_hero_title_ar else obj.sub_hero_title
+
+    def get_hero_description(self, obj):
+        language = self._get_language()
+        return obj.hero_description_ar if language == 'ar' and obj.hero_description_ar else obj.hero_description
+
+    def _get_language(self):
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+        return 'en'
 
 
 class ServiceDetailSerializer(serializers.ModelSerializer):
@@ -67,18 +243,58 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
     ratings = ServiceRatingSerializer(many=True, read_only=True)
     packages = PackageSerializer(many=True, read_only=True)
     addons = AddonSerializer(many=True, read_only=True)
-    hero_image_url = serializers.SerializerMethodField()
-
+    image_url = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    hero_title = serializers.SerializerMethodField()
+    sub_hero_title = serializers.SerializerMethodField()
+    hero_description = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
-        fields = "__all__"
+        fields = [
+            'id', 'name', 'start_price', 'service_type',
+            'description', 'icon', 'is_active', 'hero_title',
+            'sub_hero_title', 'hero_description', 'image',
+            'image_url', 'features', 'contents', 'ratings',
+            'packages', 'addons', 'created_at', 'updated_at'
+        ]
 
-    def get_hero_image_url(self, obj):
-        if obj.hero_image:
-            return obj.hero_image.url
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
         return None
 
+    def get_name(self, obj):
+        language = self._get_language()
+        return obj.name_ar if language == 'ar' and obj.name_ar else obj.name
+
+    def get_description(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def get_hero_title(self, obj):
+        language = self._get_language()
+        return obj.hero_title_ar if language == 'ar' and obj.hero_title_ar else obj.hero_title
+
+    def get_sub_hero_title(self, obj):
+        language = self._get_language()
+        return obj.sub_hero_title_ar if language == 'ar' and obj.sub_hero_title_ar else obj.sub_hero_title
+
+    def get_hero_description(self, obj):
+        language = self._get_language()
+        return obj.hero_description_ar if language == 'ar' and obj.hero_description_ar else obj.hero_description
+
+    def _get_language(self):
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+        return 'en'
 
 class BookingCreateSerializer(serializers.ModelSerializer):
     addon_ids = serializers.ListField(

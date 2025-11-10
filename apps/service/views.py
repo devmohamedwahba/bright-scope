@@ -11,7 +11,6 @@ from django.db.models import Q
 
 
 class ServiceListAPIView(APIView):
-
     @classmethod
     def get(cls, request):
         service_type = request.GET.get('service_type')
@@ -20,18 +19,16 @@ class ServiceListAPIView(APIView):
         if service_type:
             queryset = queryset.filter(service_type=service_type)
 
-        serializer = ServiceListSerializer(queryset, many=True)
+        serializer = ServiceListSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
 
 class ServiceDetailAPIView(APIView):
-
     @classmethod
     def get(cls, request, pk):
         service = get_object_or_404(Service, pk=pk, is_active=True)
-        serializer = ServiceDetailSerializer(service)
+        serializer = ServiceDetailSerializer(service, context={'request': request})
         return Response(serializer.data)
-
 
 class BookingCreateAPIView(APIView):
     @classmethod
