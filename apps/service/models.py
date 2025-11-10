@@ -1,5 +1,6 @@
 from django.db import models
 from common.utils import BaseModel
+from cloudinary.models import CloudinaryField
 
 
 class Service(BaseModel):
@@ -20,7 +21,9 @@ class Service(BaseModel):
     hero_title = models.CharField(max_length=200, blank=True)
     sub_hero_title = models.CharField(max_length=200, blank=True, null=True)
     hero_description = models.TextField(blank=True)
-    hero_image = models.ImageField(upload_to='services/', null=True, blank=True)
+    # hero_image = models.ImageField(upload_to='services/', null=True, blank=True)
+    image = CloudinaryField('image', blank=True, null=True)  # optional field
+
 
     def __str__(self):
         return self.name
