@@ -14,6 +14,9 @@ import environ
 from pathlib import Path
 import dj_database_url
 from datetime import timedelta
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api  # Add these imports
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,13 +47,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     "rest_framework",
+    'cloudinary',
+    'cloudinary_storage',
     'apps.account',
     'apps.contact_us',
     'apps.service',
     'apps.settings',
     'apps.payments',
-    'cloudinary',
-    'cloudinary_storage',
+
 ]
 
 MIDDLEWARE = [
@@ -234,10 +238,20 @@ else:
 
     ]
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
+# Cloudinary Configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET')
+    'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': env('CLOUDINARY_API_KEY'),
+    'API_SECRET': env('CLOUDINARY_API_SECRET'),
 }
+
+# Cloudinary SDK configuration
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET'],
+    secure=True
+)
+
+# Always use Cloudinary for media files
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
