@@ -48,11 +48,16 @@ class ServiceListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Service
-        fields = "__all__"
+        fields = [
+            'id', 'name', 'start_price', 'service_type', 'description', 'icon',
+            'is_active', 'hero_title', 'sub_hero_title', 'hero_description',
+            'hero_image_url', 'features', 'contents'
+        ]
 
     def get_hero_image_url(self, obj):
         if obj.hero_image:
-            return obj.hero_image.url
+            url = obj.hero_image.url
+            return url.replace('/upload/', '/upload/f_auto,q_auto/')
         return None
 
 
