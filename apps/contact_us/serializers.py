@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 import re
 from django.utils import timezone
 
+
 class ContactSubmissionSerializer(serializers.ModelSerializer):
     # Custom field-level validation
     full_name = serializers.CharField(
@@ -200,17 +201,161 @@ class ContactSubmissionSerializer(serializers.ModelSerializer):
 
         return instance
 
+
 class ContactMethodSerializer(serializers.ModelSerializer):
+    title_display = serializers.SerializerMethodField()
+    description_display = serializers.SerializerMethodField()
+    action_text_display = serializers.SerializerMethodField()
+
     class Meta:
         model = ContactMethod
-        fields = '__all__'
+        fields = [
+            'id',
+            'icon',
+            'method_type',
+            'title_display',
+            'description_display',
+            'value',
+            'action_text_display',
+            'is_active',
+            'order'
+        ]
+
+    def get_title_display(self, obj):
+        language = self._get_language()
+        return obj.title_ar if language == 'ar' and obj.title_ar else obj.title
+
+    def get_description_display(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def get_action_text_display(self, obj):
+        language = self._get_language()
+        if language == 'ar' and obj.action_text_ar:
+            return obj.action_text_ar
+        return obj.action_text or ""
+
+    def _get_language(self):
+        """Extract language from request query parameters or headers"""
+        request = self.context.get('request')
+        if request:
+            # Check query parameter first
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+
+            # Check Accept-Language header
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+
+        return 'en'  # Default to English
 
 class OfficeLocationSerializer(serializers.ModelSerializer):
+    title_display = serializers.SerializerMethodField()
+    description_display = serializers.SerializerMethodField()
+    office_name_display = serializers.SerializerMethodField()
+    office_address_display = serializers.SerializerMethodField()
+    working_hours_name_display = serializers.SerializerMethodField()
+    working_hours_weekdays_display = serializers.SerializerMethodField()
+    full_address = serializers.SerializerMethodField()
+
     class Meta:
         model = OfficeLocation
-        fields = '__all__'
+        fields = [
+            'id',
+            'icon',
+            'title_display',
+            'description_display',
+            'office_name_display',
+            'office_address_display',
+            'working_hours_name_display',
+            'working_hours_weekdays_display',
+            'full_address',
+            'google_maps_link',
+            'is_primary'
+        ]
 
+    def get_title_display(self, obj):
+        language = self._get_language()
+        return obj.title_ar if language == 'ar' and obj.title_ar else obj.title
+
+    def get_description_display(self, obj):
+        language = self._get_language()
+        return obj.description_ar if language == 'ar' and obj.description_ar else obj.description
+
+    def get_office_name_display(self, obj):
+        language = self._get_language()
+        return obj.office_name_ar if language == 'ar' and obj.office_name_ar else obj.office_name
+
+    def get_office_address_display(self, obj):
+        language = self._get_language()
+        return obj.office_address_ar if language == 'ar' and obj.office_address_ar else obj.office_address
+
+    def get_working_hours_name_display(self, obj):
+        language = self._get_language()
+        return obj.working_hours_name_ar if language == 'ar' and obj.working_hours_name_ar else obj.working_hours_name
+
+    def get_working_hours_weekdays_display(self, obj):
+        language = self._get_language()
+        return obj.working_hours_weekdays_ar if language == 'ar' and obj.working_hours_weekdays_ar else obj.working_hours_weekdays
+
+    def get_full_address(self, obj):
+        language = self._get_language()
+        if language == 'ar':
+            return f"{obj.office_name_ar}, {obj.office_address_ar}"
+        else:
+            return f"{obj.office_name}, {obj.office_address}"
+
+    def _get_language(self):
+        """Extract language from request query parameters or headers"""
+        request = self.context.get('request')
+        if request:
+            # Check query parameter first
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+
+            # Check Accept-Language header
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+
+        return 'en'  # Default to English
 
 class ContactInfoSerializer(serializers.Serializer):
-    contact_methods = ContactMethodSerializer(many=True)
-    office_locations = OfficeLocationSerializer(many=True)
+    contact_methods = ContactMethodSerializer(many=True, read_only=True)
+    office_locations = OfficeLocationSerializer(many=True, read_only=True)
+    current_language = serializers.SerializerMethodField()
+
+    def get_current_language(self, obj):
+        """Get language from the serializer context"""
+        request = self.context.get('request')
+        if request:
+            lang = request.query_params.get('lang', '').lower()
+            if lang in ['ar', 'en']:
+                return lang
+
+            accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
+            if 'ar' in accept_language.lower():
+                return 'ar'
+
+        return 'en'
+
+    def to_representation(self, instance):
+        """Override to properly structure the data"""
+        # Since we're using this as a wrapper serializer,
+        # we need to build the representation manually
+        return {
+            'contact_methods': ContactMethodSerializer(
+                instance['contact_methods'],
+                many=True,
+                context=self.context
+            ).data,
+            'office_locations': OfficeLocationSerializer(
+                instance['office_locations'],
+                many=True,
+                context=self.context
+            ).data,
+            'current_language': self.get_current_language(instance)
+        }

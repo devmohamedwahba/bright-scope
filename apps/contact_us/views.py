@@ -5,9 +5,8 @@ from .models import  ContactMethod, OfficeLocation
 from .serializers import (
     ContactSubmissionSerializer,
     ContactMethodSerializer,
-    OfficeLocationSerializer,
+    OfficeLocationSerializer,ContactInfoSerializer
 )
-
 
 class ContactSubmissionCreateView(APIView):
     def post(self, request, *args, **kwargs):
@@ -36,9 +35,9 @@ class ContactInfoView(APIView):
         office_locations = OfficeLocation.objects.all()
 
         data = {
-            "contact_methods": ContactMethodSerializer(contact_methods, many=True).data,
-            "office_locations": OfficeLocationSerializer(office_locations, many=True).data,
+            "contact_methods": contact_methods,
+            "office_locations": office_locations,
         }
 
-        return Response(data)
-
+        serializer = ContactInfoSerializer(data, context={'request': request})
+        return Response(serializer.data)
