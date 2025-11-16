@@ -83,12 +83,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        return self.is_admin
+        return self.is_superuser or super().has_perm(perm, obj)
 
     def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        return True
+        return self.is_superuser or super().has_module_perms(app_label)
 
     class Meta:
         verbose_name = 'User'
