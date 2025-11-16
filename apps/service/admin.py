@@ -291,14 +291,11 @@ class BookingAdmin(admin.ModelAdmin):
                 'package',
                 'addons',
                 'booking_date',
-                'booking_time',
-                'special_instructions'
+                'special_requests'
             )
         }),
         (_('Pricing'), {
             'fields': (
-                'base_price',
-                'addons_total',
                 'total_price'
             )
         }),
