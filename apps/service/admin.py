@@ -282,7 +282,7 @@ class BookingAdmin(admin.ModelAdmin):
                 'customer_name',
                 'customer_email',
                 'customer_phone',
-                'customer_address'
+                'address'
             )
         }),
         (_('Booking Details'), {
@@ -295,9 +295,7 @@ class BookingAdmin(admin.ModelAdmin):
             )
         }),
         (_('Pricing'), {
-            'fields': (
-                'total_price'
-            )
+            'fields': ('total_price',)
         }),
         (_('Status'), {
             'fields': ('status',)
